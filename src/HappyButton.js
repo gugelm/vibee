@@ -5,6 +5,8 @@ import { Button } from 'react-native-elements'
 import useStateWithCallback from 'use-state-with-callback'
 import HappyAnimation, { animateHappy } from './HappyAnimation'
 import { Audio } from 'expo-av'
+import { useDispatch } from 'react-redux'
+import { addPrediction } from './redux/actions';
 
 let animatedValue = new Animated.Value(0)    
 
@@ -23,7 +25,7 @@ export let animateHappyPress = () => {
 }
 
 export function HappyButton() {
-   
+const dispatch = useDispatch()
 let playSound = async () => {
 const soundObject = new Audio.Sound();
     await soundObject.loadAsync(require('./assets/aqua4.mp3'));
@@ -39,8 +41,8 @@ const pressButton = animatedValue.interpolate({
 
 const [happy, editHappy] = useStateWithCallback(0, happy => {
     {firebase.database().ref(`vibee/room/happy/${user}`).update({ happy })}
-    console.log('happy callback!')
     animateHappy()
+    dispatch(addPrediction(2))
     })
 
 const [ happyTotal, happyTotalEdit ] = React.useState(0)

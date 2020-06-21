@@ -1,62 +1,81 @@
 import React, { useEffect, useState, Component } from 'react';
-import { View, Text } from 'react-native'
+import { View, Text, Animated, Easing, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native'
 import firebase from 'firebase'
+import { Button } from 'react-native-elements'
+import useStateWithCallback from 'use-state-with-callback'
+
+export function Usercount() {
 
 const [lastActive, lastActiveUpdate] = useStateWithCallback(Date.now(), lastActive => {
-	{firebase.database().ref(`vibee/room/${user}`).update({ lastActive })}
-    console.log('lastactive callback!')
-      })
-
-
-      const [ activeUsers, updateActiveUsers ] = React.useState(0)
-      let totalUsers = 0
-
-
-
-      useEffect(() => {
-  //heartbeat to count active users
-  setInterval(function(){ 
-  	lastActiveUpdate(lastActive+(Date.now()-lastActive))
-  	editHappy(happy)
-  	editSad(sad)
-  	editAngry(angry)
-  }, 1500000)
-
-  // calculate total votes
-  firebase.database().ref(`/vibee/room`)
-  .on("value", function(snapshot) {
-  let room = snapshot.val()
-  happyUser = 0
-  sadUser = 0
-  angryUser = 0
-  totalUsers = 0
-  
-  // each key is causing it to rerender... 
-  // i think we want to avoid using state user for happyTotalEdit. update to state causes this to re-render...
-  Object.keys(room).forEach(key => {
-	happyUser += room[key].happy
-	sadUser += room[key].sad
-	angryUser += room[key].angry
-	if (room[key].lastActive > (Date.now() - 30000) ) {
-		totalUsers += 1
-	} else {
-		totalUsers += 0
-	}
-  updateActiveUsers(activeUsers + totalUsers)
-  happyTotalEdit(happyTotal + happyUser)
-  sadTotalEdit(sadTotal + sadUser)
-  angryTotalEdit(angryTotal + angryUser)
+  {firebase.database().ref(`vibee/room/lastActive/${user}`).update({ lastActive })}
+  console.log('lastactive callback!')
   })
-  }, function (errorObject) {
+
+const [ activeUsers, updateActiveUsers ] = React.useState(0)
+  let totalUsers = 0
+
+useEffect(() => {
+  //heartbeat to count active users. usually set to 5000 ms.
+  setInterval(function(){ 
+  lastActiveUpdate(lastActive+(Date.now()-lastActive))
+  }, 15000)
+
+  // calculate active users (active in last 30 s)
+  firebase.database().ref(`/vibee/room/lastActive`)
+  .on("value", function(snapshot) {
+    let room = snapshot.val()
+    let totalUsers = 0
+    Object.keys(room).forEach(key => {
+      if (room[key].lastActive > (Date.now() - 30000) ) {
+        totalUsers += 1
+      } else {
+        totalUsers += 0
+      }
+    })
+    updateActiveUsers(activeUsers + totalUsers)
+  }, 
+  function (errorObject) {
   console.log("The read failed: " + errorObject.code);
   })
-},[])
+  },[])
 
-      return (
-	<View>
-	<Text 
-		style={{ flex: 1, fontSize: 38, fontWeight: 'bold', alignSelf: 'center', justifyContent: 'flex-end'}}>
-		{activeUsers} Vibers
-	</Text>
-	</View>
-	)
+return (
+  <View
+  style={{
+    backgroundColor: 'rgb(231, 231, 231)',
+    padding: 20, 
+    zIndex: 1,
+    borderRadius: 90,
+    width:180,
+    height:180,
+    alignItems:'center',
+    alignSelf:'center',
+  }}>
+<Text
+  style={{ 
+    flex: 1,
+    fontSize: 60, 
+    fontWeight: 'bold', 
+    alignSelf: 'center', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    marginTop: 10,
+    }}>
+  {activeUsers}
+</Text>
+<Text
+  style={{ 
+    flex: 1,
+    fontSize: 24, 
+    fontWeight: '200', 
+    alignSelf: 'center', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    }}>
+  Vibers
+</Text>
+</View>
+)
+}
+
+export default Usercount

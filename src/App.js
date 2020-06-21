@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Buttons from './Buttons'
 import firebase from 'firebase'
-import { Provider } from 'react-redux'
 import FirebaseProvider from './Firebase'
+import { store } from './redux/store'
+import { Provider } from 'react-redux'
 
 export function App() {
 
 return (
   <FirebaseProvider>
+  <Provider store={store}>
   <View style={styles.container}>
     <Buttons />
   </View>
+  </Provider>
   </FirebaseProvider>
 );
 }
