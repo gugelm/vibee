@@ -1,16 +1,11 @@
 import React from 'react';
 import { View, Animated, Easing, Dimensions, Image, Text } from 'react-native'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 let animatedValue = new Animated.Value(0)  
 
-
-    // happyAnimations.map(item => <HappyAnimation> key={item} </HappyAnimation>)
-    // happyAnimations.map(item => <Text> key={item} </Text>)
-
 export function animateHappy() {
-    const dispatch = useDispatch()
-    animatedValue.setValue(0)
+	animatedValue.setValue(0)
     Animated.timing(
         animatedValue,
         {
@@ -24,7 +19,8 @@ export function animateHappy() {
 }
 
 export function HappyAnimation() {
-
+    
+    const happyAnimations = useSelector(state => state.happyAnimations)
     const [ happyCounter, happyCounterEdit ] = React.useState(0)
 
     let windowWidth = Dimensions.get('window').width
@@ -41,24 +37,23 @@ export function HappyAnimation() {
     })
 
 return (
-    <View>
-    <renderText />
-    <Animated.Image
-	source={require('./assets/happy.png')} 
-		style={{
+    happyAnimations.map(item => <Animated.Image 
+        source={require('./assets/happy.png')}
+        key={Math.floor(Math.random() * 99999999).toString(10)}
+        style={{
 		transform: [
 		{translateY: (movingMargin)},
 		{translateX: (movingXHappy)}
 		],
 		zIndex: 0,
-        marginLeft: 0,
-		marginTop: (windowHeight*.35),
-        //marginLeft: 144,
-		//marginTop: (windowHeight*.35),        
+        // change this back to absolute later
+        position: 'relative',
+        marginLeft: 144,
+		marginTop: (windowHeight*.35),    
 		height: 14,
 		width: 14,}} 
-    />
-    </View>
+        >    
+    </Animated.Image>)
 )
 }
 

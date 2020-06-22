@@ -6,9 +6,9 @@ import useStateWithCallback from 'use-state-with-callback'
 import HappyAnimation, { animateHappy } from './HappyAnimation'
 import { Audio } from 'expo-av'
 import { useDispatch } from 'react-redux'
-import { addPrediction } from './redux/actions';
+import { addPrediction } from './redux/actions'
 
-let animatedValue = new Animated.Value(0)    
+let animatedValue = new Animated.Value(0)  
 
 export let animateHappyPress = () => {
     animatedValue.setValue(0)
@@ -42,7 +42,7 @@ const pressButton = animatedValue.interpolate({
 const [happy, editHappy] = useStateWithCallback(0, happy => {
     {firebase.database().ref(`vibee/room/happy/${user}`).update({ happy })}
     animateHappy()
-    dispatch(addPrediction(2))
+    // dispatch(addPrediction(2))
     })
 
 const [ happyTotal, happyTotalEdit ] = React.useState(0)

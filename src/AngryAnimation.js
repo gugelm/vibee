@@ -41,7 +41,8 @@ return (
         {translateX: (movingXAngry)}
         ],
         zIndex: 0,
-        marginLeft: 0,
+        position: 'absolute',
+        marginLeft: 175,
         marginTop: (windowHeight*.35),
         height: 14,
         width: 14,
