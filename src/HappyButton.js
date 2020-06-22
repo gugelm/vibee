@@ -34,6 +34,8 @@ const soundObject = new Audio.Sound();
     await soundObject.playAsync();
 }
 
+// ok
+
 const pressButton = animatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 18]
